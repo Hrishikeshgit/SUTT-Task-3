@@ -1,0 +1,59 @@
+{% extends "questions/base.html" %}
+{% block content %}
+	<article class="media content-section">
+		<img class = "rounded-circle article-img" src = "{{ object.op_name.profile.image.url }}" >
+		<div class="media-body">
+			<div class="article-metadata">
+		      <a class="mr-2" href="#">{{ object.op_name }}</a>
+		      <small class="text-muted">{{ object.pub_date }}</small>
+		      {% if object.op_name == user or user.is_staff %}
+		      	<div style="float:  right;">
+		      		<br></br>
+			      	<a class = "btn btn-secondary btn-sm mt-1 mb-1" href = "{% url 'update' object.id %}">Update</a>
+			      	<a class = "btn btn-danger btn-sm mt-1 mb-1" href = "{% url 'delete' object.id %}">Delete</a>
+		      	</div>
+		      {% endif %}
+		    </div>
+	    <h2><{{ object.question_text }}</h2>
+	    <p class="article-content">{{ object.question_text }}</p>
+	  </div>
+	</article>
+
+	<!-- Making a report button-->
+	<form action="{% url 'report_question' question.pk%}"
+	method="POST">
+		{% csrf_token %}
+		{% if liked %}
+			<button type = "submit",  name = "question_id", value = {{question.id}}
+			, class = "btn btn-secondary btn-sm">Remove Report</button> 
+
+		{% else %}
+			<button type = "submit",  name = "question_id", value = {{question.id}} , 
+			 class = "btn btn-secondary btn-sm">Report</button> 
+		{% endif %}
+		- Reported by {{total_report}}
+	</form>
+	<hr></hr>
+	<!-- Making the comments sections-->
+	<h2>Comments</h2>
+	<br></br>
+	{% if not question.comments.all %}
+		<p>No comments yet</p><a href = "{% url 'add_comment' question.pk %}">
+		Add One </a>
+
+	{% else %}
+	<a href = "{% url 'add_comment' question.pk %}">Add One </a>
+	<br></br>
+		{% for comment in question.comments.all %}
+			<article class = "media content-section">
+				<div class = "media-body">
+					<p class = "article-content">
+						<strong>{{comment.name}} -  {{comment.date_added}}</strong>
+						{{comment.body}}
+					</p>
+				</div>
+			</article>
+		{% endfor %}
+		
+	{% endif %}
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends "questions/base.html" %}
+{% block content %}
+	{% for questions in questions%}
+		<article class="media content-section">
+			<img class = "rounded-circle article-img" src = "{{ questions.op_name.profile.image.url }}" >
+			<div class="media-body">
+				<div class="article-metadata">
+			      <a class="mr-2" href="#">{{ questions.op_name }}</a>
+			      <small class="text-muted">{{ questions.pub_date }}</small>
+			    </div>
+		    <h2><a class="article-title" href="{% url 'detail' questions.id %}">{{ questions.question_text }}</a></h2>
+		    <p class="article-content">{{ questions.content }}</p>
+		  </div>
+		</article>
+	{% endfor %}
+{% endblock content %}

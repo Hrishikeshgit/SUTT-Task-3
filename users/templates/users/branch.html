@@ -1,0 +1,12 @@
+{% extends 'questions/base.html' %}
+{% block content %}
+	{% if people %}
+		<h3>The people in {{current_branch}} are </h3>
+		<br></br>
+		{% for person in people %}
+			<p >{{forloop.counter}}. {{ person.user }} ({{person.year}} batch)</p>
+		{% endfor %}
+	{% else %}
+		Your branch is empty
+	{% endif %}
+{% endblock content%}
