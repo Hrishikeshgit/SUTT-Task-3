@@ -1,0 +1,37 @@
+{% extends "questions/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+	{% if squestions %}
+		{% for yearquestion in yearquestions %}
+		<article class="media content-section">
+			<img class = "rounded-circle article-img" src = "{{ squestion.op_name.profile.image.url }}" >
+			<div class="media-body">
+				<div class="article-metadata">
+			      <a class="mr-2" href="#">{{ yearquestion.op_name }}</a>
+			      <small class="text-muted">{{ yearquestion.pub_date }}</small>
+			      <!-- Deleted update and delete can get from main -->
+			    </div>
+		    <h2><{{ yearquestion.question_text }}</h2>
+		    <p class="article-content">{{ yearquestion.question_text }}</p>
+		  </div>
+		</article>
+		{% endfor %}
+
+	{% else %}
+		<h2>No questions available</h2>
+
+	{% endif %}
+
+	<div class="content-section">
+		<form method="POST">
+			{% csrf_token %}
+			<fieldset class = "form-group">
+				<legend class = "border-bottom mb-4">Add question</legend>
+				{{form|crispy}}
+			</fieldset>
+			<div class = "form-group">
+				<button class = "btn btn-outline-info" type="submit">Add</button>
+			</div>
+		</form>
+	</div>
+{% endblock content %}

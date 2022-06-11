@@ -48,19 +48,15 @@ class Comment(models.Model):
 		
 
 #Making a new model secret Question
-"""class S_Question(models.Model):
+class SQuestion(models.Model):
 	op_name = models.ForeignKey (User, on_delete = models.CASCADE)
 	op_id = models.CharField (max_length = 15)
 	pub_date = models.DateTimeField (default = timezone.now)
 	no_replies = models.IntegerField (default = 0)
 	question_text = models.CharField(max_length = 200)
-	report = models.ManyToManyField(User, related_name = 'questions')
-
-	def total_report (self):
-		return self.report.count()
 
 	def __str__ (self):
 		return self.question_text
 
-	def get_absolute_url (self):
-		return reverse ('detail', kwargs = {'pk': self.pk})"""
+	# def get_absolute_url (self):
+	# 	return reverse ('detail', kwargs = {'pk': self.pk})

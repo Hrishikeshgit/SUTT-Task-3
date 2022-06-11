@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import  get_object_or_404
-from .models import Question, Student, Comment
+from .models import Question, Student, Comment, SQuestion
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .forms import CommentForm
+from .forms import SQuestionForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (	ListView,
 								 	DetailView,
@@ -14,6 +15,7 @@ from django.views.generic import (	ListView,
 								 	DeleteView)
 
 from users.models import Profile
+from itertools import chain
 
 # Create your views here.
 @login_required
@@ -148,12 +150,97 @@ class AddCommentView (LoginRequiredMixin, CreateView):
 		form.instance.op_name = self.request.user
 		return super().form_valid(form)
 
-def squestion_detail(request):
-	squestions = []
+def yearquestion_detail(request):
+	yearquestions = []
 	current_year = request.user.profile.year
 	yearmates = Profile.objects.filter(year = current_year)
 	questions = Question.objects.all()
-	for question in questions:
-		if yearmates.username == question.op_name:
-			squestions.append(question)
-	return render (request, 'questions/squestion_detail.html', context)
+	yearmates_id = yearmates.values_list('id', flat = True )
+	yearquestions =  Question.objects.filter(id__in = yearmates_id)
+	context = {'yearquestions': yearquestions}
+	return render (request, 'questions/yearquestion_detail.html', context)
+
+class AddSQuestionView (LoginRequiredMixin, CreateView):
+	model = SQuestion
+	form_class = SQuestionForm
+	template_name = 'questions/add_squestion.html'
+	success_url = '/squestions'
+
+	def form_valid(self, form):
+		form.instance.squestion_id = self.kwargs['pk']
+		form.instance.op_name = self.request.user
+		return super().form_valid(form)
+
+# def squestion_add (request):
+# 	empty_set = SQuestion.objects.none()
+# 	current_user = request.user.username
+# 	student_id = request.user.profile.student_id
+
+# 	return render (request, 'questions/add_squestion.html', context)
+
+class SQuestionListView (LoginRequiredMixin, ListView):
+	model = SQuestion
+	template_name = 'questions/squestion_home.html'
+	context_object_name = 'squestions'
+	ordering = ['-pub_date']
+
+
+class SQuestionDetailView (LoginRequiredMixin, DetailView):
+	model = SQuestion
+	template_name = 'questions/squestion_detail.html'
+	context_object_name = 'squestions'
+
+	def get_context_data (self, *args, **kwargs):
+		context = super (SQuestionDetailView, self).get_context_data(*args, **kwargs)
+		stuff = get_object_or_404 (SQuestion, id = self.kwargs['pk'])
+		# print(stuff)
+		# total_report = stuff.total_report()
+
+		# reported = False
+		# if stuff.report.filter(id = self.request.user.id).exists():
+		# 	reported = True 
+
+
+		# context['total_report'] =  total_report
+		# context['reported'] =  reported
+		
+
+		return context
+
+	def get_absolute_url(self):
+		return reverse_lazy('squestions', kwargs = {'pk': self.pk})
+
+
+class SQuestionCreateView (LoginRequiredMixin, CreateView):
+	model = SQuestion
+	fields = ['question_text']
+
+	#To show that the logged in user is the author
+	def form_valid(self, form):
+		form.instance.op_name = self.request.user
+		return super().form_valid(form)
+
+
+class SQuestionUpdateView (LoginRequiredMixin, UserPassesTestMixin,  UpdateView):
+	model = SQuestion
+	fields = ['question_text']
+
+	#To show that the logged in user is the author
+	def form_valid(self, form):
+		form.instance.op_name = self.request.user
+		return super().form_valid(form)
+
+	def test_func(self):
+		squestions = self.get_object()
+		if self.request.user == squestions.op_name:
+			return True
+		return False
+
+class SQuestionDeleteView (LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+	model = SQuestion
+	success_url = '/squestions'
+	def test_func(self):
+		squestions = self.get_object()
+		if self.request.user == squestions.op_name :
+			return True
+		return False

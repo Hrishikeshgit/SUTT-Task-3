@@ -6,7 +6,8 @@ from .views import (QuestionListView,
  					QuestionUpdateView,
  					QuestionDeleteView,
  					AddCommentView,
- 					ReportView)
+ 					ReportView,
+ 					AddSQuestionView)
 
 urlpatterns = [
 	path ('', QuestionListView.as_view(), name ='home'),

@@ -20,6 +20,13 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from questions import views as question_views
+from questions.views import (AddSQuestionView, 
+                    SQuestionListView,
+                    SQuestionDetailView,
+                    SQuestionCreateView,
+                    SQuestionUpdateView,
+                    SQuestionDeleteView,
+                    )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,9 +39,16 @@ urlpatterns = [
     #path ('home/', auth_views.LoginView.as_view(template_name = 'questions/home.html'),name = 'home' ),
     path ('login/', auth_views.LoginView.as_view(template_name = 'users/login.html'),name = 'login' ),
     path ('', auth_views.LoginView.as_view(template_name = 'users/login.html'),name = 'login' ),
-    path('squestions', question_views.squestion_detail, name = 'squestion'),
+    path('yearquestions', question_views.yearquestion_detail, name = 'yearquestions'),
     path ('logout/', auth_views.LogoutView.as_view(template_name = 'users/logout.html'),name = 'logout' ),
     path('branch/', user_views.branch_view, name = 'branch' ),
+    #path('squestions/add/', question_views.squestion_add, name = 'squestion_add'),
+    path ('squestions/', SQuestionListView.as_view(), name ='squestions'),
+    path('squestions/add/', AddSQuestionView.as_view(template_name = 'questions/add_squestion.html'), name = 'squestion_add' ),
+    path ('squestions/<int:pk>/', SQuestionDetailView.as_view(), name ='squestion_detail'),
+    path ('squestions/<int:pk>/update/', SQuestionUpdateView.as_view(), name ='squestion_update'),
+    path ('squestions/<int:pk>/delete/', SQuestionDeleteView.as_view(), name ='squestion_delete'),
+    path ('squestions/new/', SQuestionCreateView.as_view(), name ='squestion_create'),
 ]
 
 if settings.DEBUG :

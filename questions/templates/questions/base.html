@@ -34,8 +34,17 @@
 	        <!-- Navbar Right Side -->
 	        <div class="navbar-nav">
 	        	{% if user.is_authenticated %}
-	        		<a class="nav-item nav-link" href= "{% url 'branch' %}">Branchmates</a>
-	        		<a class="nav-item nav-link" href= "{% url 'squestion' %}">Specific Question</a>
+	        	<div class="dropdown">
+  					<a class="btn btn-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    				More actions
+  					</a>
+
+  					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    					<a class="dropdown-item" href="{% url 'branch' %}">Branchmates</a>
+    					<a class="dropdown-item" href= "{% url 'squestions' %}">Specific Question</a>
+    					<a class="dropdown-item" href="{% url 'yearquestions' %}">Yearbased Question</a>
+  					</div>
+				</div>
 	        		<a class="nav-item nav-link" href="{% url 'create' %}">New post</a>
 	        		<a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
 	        		<a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
